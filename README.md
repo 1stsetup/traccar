@@ -27,6 +27,7 @@ Some of the available features include:
 - Alarms and notifications
 - Account and device management
 - Email and SMS support
+- TOTP multi-factor authentication (Tested with Google Authenticator)
 
 ## Build
 
