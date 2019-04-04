@@ -16,6 +16,7 @@
 package org.traccar.model;
 
 import org.traccar.database.QueryIgnore;
+import org.traccar.Context;
 
 public class Server extends ExtendedModel {
 
@@ -165,5 +166,9 @@ public class Server extends ExtendedModel {
 
     public void setPoiLayer(String poiLayer) {
         this.poiLayer = poiLayer;
+    }
+
+    public boolean getGoogleAuthEnabled() {
+        return Context.getConfig().getBoolean("googleAuthenticator.enable");
     }
 }

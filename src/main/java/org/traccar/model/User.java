@@ -20,8 +20,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.traccar.database.QueryExtended;
 import org.traccar.database.QueryIgnore;
 import org.traccar.helper.Hashing;
+import org.traccar.Context;
 
 import java.util.Date;
+
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorException;
 
 public class User extends ExtendedModel {
 
@@ -273,4 +277,27 @@ public class User extends ExtendedModel {
         return Hashing.validatePassword(password, hashedPassword, salt);
     }
 
+    private String googleAuthKey;
+
+    public void setGoogleAuthKey(String key) {
+        this.googleAuthKey = key;
+    }
+
+    public String getGoogleAuthKey() {
+        if (this.googleAuthKey == null) {
+            GoogleAuthenticator gAuth = new GoogleAuthenticator();
+            this.setGoogleAuthKey(gAuth.createCredentials().getKey());
+        }
+        return this.googleAuthKey;
+    }
+
+    public boolean isGoogleAuthCodeValid(int code)
+    throws GoogleAuthenticatorException {
+        GoogleAuthenticator gAuth = new GoogleAuthenticator();
+
+        if (this.email.equalsIgnoreCase(Context.getConfig().getString("googleAuthenticator.notfor"))) {
+            return true;
+        }
+        return gAuth.authorize(getGoogleAuthKey(), code);
+    }
 }
