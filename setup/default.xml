@@ -76,7 +76,7 @@
         SELECT * FROM tc_statistics WHERE captureTime BETWEEN :from AND :to ORDER BY captureTime
     </entry>
 
-    <entry key='googleAuthenticator.enable'>true</entry>
+    <entry key='googleAuthenticator.enable'>false</entry>
     <entry key='googleAuthenticator.notfor'>admin</entry>
 
     <entry key='gps103.port'>5001</entry>
