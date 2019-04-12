@@ -277,27 +277,49 @@ public class User extends ExtendedModel {
         return Hashing.validatePassword(password, hashedPassword, salt);
     }
 
-    private String googleAuthKey;
+    private String totpKey;
+    private boolean useTotp;
 
-    public void setGoogleAuthKey(String key) {
-        this.googleAuthKey = key;
+    public void setTotpKey(String key) {
+        this.totpKey = key;
     }
 
-    public String getGoogleAuthKey() {
-        if (this.googleAuthKey == null) {
+    public String getTotpKey() {
+        if (this.totpKey == null) {
             GoogleAuthenticator gAuth = new GoogleAuthenticator();
-            this.setGoogleAuthKey(gAuth.createCredentials().getKey());
+            this.setTotpKey(gAuth.createCredentials().getKey());
         }
-        return this.googleAuthKey;
+        return this.totpKey;
     }
 
-    public boolean isGoogleAuthCodeValid(int code)
-    throws GoogleAuthenticatorException {
-        GoogleAuthenticator gAuth = new GoogleAuthenticator();
+    public void setUseTotp(boolean doUse) {
+        if ((doUse) && (!this.useTotp)) {
+            this.totpKey = null;
+            this.getTotpKey();
+        }
+        this.useTotp = doUse;
+    }
 
-        if (this.email.equalsIgnoreCase(Context.getConfig().getString("googleAuthenticator.notfor"))) {
+    public boolean getUseTotp() {
+        if (!Context.getConfig().getBoolean("totp.enabled")) {
+            return false;
+        }
+        return this.useTotp;
+    }
+
+    @JsonIgnore
+    @QueryIgnore
+    public boolean isTotpAuthCodeValid(int code)
+    throws GoogleAuthenticatorException {
+        if (!Context.getConfig().getBoolean("totp.enabled")) {
             return true;
         }
-        return gAuth.authorize(getGoogleAuthKey(), code);
+
+        GoogleAuthenticator gAuth = new GoogleAuthenticator();
+        if (Context.getConfig().getString("totp.preference").toLowerCase().equals("user")) {
+            if (!this.useTotp) return true;
+        }
+
+        return gAuth.authorize(getTotpKey(), code);
     }
 }

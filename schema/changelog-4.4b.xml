@@ -9,7 +9,11 @@
   <changeSet author="author" id="changelog-4.4b-all">
     <sql>
       ALTER TABLE tc_users
-      ADD googleAuthKey VARCHAR(128)
+      ADD totpKey VARCHAR(128)
+    </sql>
+    <sql>
+      ALTER TABLE tc_users
+      ADD useTotp BOOLEAN DEFAULT FALSE;
     </sql>
   </changeSet>
 

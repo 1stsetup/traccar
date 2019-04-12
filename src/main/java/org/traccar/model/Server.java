@@ -168,7 +168,8 @@ public class Server extends ExtendedModel {
         this.poiLayer = poiLayer;
     }
 
-    public boolean getGoogleAuthEnabled() {
-        return Context.getConfig().getBoolean("googleAuthenticator.enable");
+    @QueryIgnore
+    public boolean getTotpEnabled() {
+        return Context.getConfig().getBoolean("totp.enabled");
     }
 }

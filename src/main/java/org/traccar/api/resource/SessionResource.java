@@ -100,11 +100,11 @@ public class SessionResource extends BaseResource {
     @POST
     public User add(
             @FormParam("email") String email, @FormParam("password") String password,
-            @FormParam("googleAuthCode") int googleAuthCode) throws SQLException {
+            @FormParam("code") int code) throws SQLException {
         User user = Context.getPermissionsManager().login(email, password);
         if (user != null) {
-            if (Context.getConfig().getBoolean("googleAuthenticator.enable")) {
-                if (!user.isGoogleAuthCodeValid(googleAuthCode)) {
+            if (Context.getConfig().getBoolean("totp.enabled")) {
+                if (!user.isTotpAuthCodeValid(code)) {
                     throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).build());
                 }
             }
